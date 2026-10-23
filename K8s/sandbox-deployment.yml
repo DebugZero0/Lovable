@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+# metadata: Metadata about the deployment, including its name and labels
+metadata:
+  name:  sandbox-deployment
+  labels:
+    name:  sandbox-deployment
+# spec: Specification of the desired behavior of the deployment, including the number of replicas and the template for the pods
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app:  sandbox
+  template:
+    metadata:
+      labels:
+        app:  sandbox
+    spec:
+      serviceAccountName: resource-manager # Specifies the ServiceAccount to be used by the pods in this deployment
+      containers:
+      - image:  sandbox:latest
+        imagePullPolicy: IfNotPresent # Indicates that the image should be pulled only if it is not already present on the node
+        name:  main-sandbox-container
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "400Mi"
+          requests:
+            cpu: "250m"
+            memory: "200Mi"
+            
+        livenessProbe:
+        # • Determines when to restart a container.
+        # • Failure Action: If a liveness probe fails, Kubernetes kills the container and restarts it to recover from unrecoverable states or deadlocks
+          httpGet:
+            path: /api/sandbox/health
+            port: 3000
+          initialDelaySeconds: 90
+          timeoutSeconds: 10
+        readinessProbe:
+        # • Determines when a container is ready to start accepting traffic.
+        # • Failure Action: If a readiness probe fails, Kubernetes removes the Pod from service endpoints, stopping traffic from reaching it without restarting the container
+          httpGet:
+            path: /api/sandbox/health
+            port: 3000
+          initialDelaySeconds: 30
+          timeoutSeconds: 10     
+        ports:
+        - containerPort:  3000
+          name:  main-sandbox
