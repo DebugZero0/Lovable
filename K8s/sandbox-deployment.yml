@@ -18,7 +18,7 @@ spec:
     spec:
       serviceAccountName: resource-manager # Specifies the ServiceAccount to be used by the pods in this deployment
       containers:
-      - image:  sandbox:latest
+      - image:  sandbox:v2
         imagePullPolicy: IfNotPresent # Indicates that the image should be pulled only if it is not already present on the node
         name:  main-sandbox-container
         resources:
