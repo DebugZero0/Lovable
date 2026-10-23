@@ -5,13 +5,13 @@ export const createService = async (sandboxId) => {
         metadata: {
             name: `sandbox-service-${sandboxId}`,
             labels: {
-                app: 'sandbox',
+                app: 'sandbox-preview',
                 sandboxId: sandboxId
             }
         },
         spec: { 
             selector: {
-                app: 'sandbox',
+                app: 'sandbox-preview',
                 sandboxId: sandboxId
             },
                 ports: [
@@ -26,11 +26,12 @@ export const createService = async (sandboxId) => {
         }
     };
 
-    const response = await K8sCoreV1Api.createNamespacedService(
-        "default",
-        serviceManifest
-    );
+        const response = await K8sCoreV1Api.createNamespacedService({
+            namespace: "default",
+            body: serviceManifest
+        });
     return response;
+
 }
 
 /*

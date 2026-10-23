@@ -7,7 +7,7 @@ export async function createPod(sandboxId) {
         metadata: {
             name: `sandbox-${sandboxId}`,
             labels: {
-                app: 'sandbox',
+                app: 'sandbox-preview',
                 sandboxId: sandboxId
             }
         },
@@ -33,6 +33,9 @@ export async function createPod(sandboxId) {
     };
 
     // Create the pod in the default namespace
-    const response = await K8sCoreV1Api.createNamespacedPod("default", podManifest);
+    const response = await K8sCoreV1Api.createNamespacedPod({
+        namespace: "default",
+        body: podManifest
+    });
     return response;
 }
